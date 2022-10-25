@@ -174,7 +174,7 @@
             <div class="col-md-4 col-12 text-center">
               <h2 class="floor-list-title mb-4">Floor List</h2>
               {#each $hotel.data.hotel.floors as floor}
-                <a href="./floor/{floor.id}">{floor.index}</a>
+                <a href="/floors/{floor.id}-{hotelId}">{floor.index}</a>
               {/each}
             </div>
           </div>

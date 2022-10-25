@@ -1,5 +1,6 @@
 <script>
   import { createEventDispatcher } from "svelte";
+  import "../css/global.css";
   let main;
   export let headerHeight = 64;
   export let footerHeight = 64;
@@ -16,11 +17,6 @@
         <a href="./pages/createHotel.html" class="mr-3">Create Hotel </a>
         <a href="./pages/register.html">Register </a>
       </div>
-      <input
-        type="input"
-        placeholder="Search"
-        class="form-control search-input"
-      />
     </div>
   </div>
   <main>

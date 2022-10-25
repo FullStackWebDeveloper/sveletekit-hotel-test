@@ -16,7 +16,9 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@apollo/client": "^3.7.0",
 		"bootstrap": "^5.2.2",
+		"graphql": "^16.6.0",
 		"svelte-apollo": "^0.5.0",
 		"svelte-apollo-client": "^0.1.4",
 		"sveltestrap": "^5.9.0"

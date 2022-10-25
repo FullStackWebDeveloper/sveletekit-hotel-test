@@ -53,3 +53,7 @@ label {
     font-size: 20px;
   }
 }
+
+.main-layout {
+  background-color: rgba(0, 0, 0, 0.4);
+}

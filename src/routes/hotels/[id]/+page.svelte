@@ -50,7 +50,6 @@
     });
     const getData = async () => {
         let result = await hotel.result()
-        console.log(result)
     }
     getData()
 

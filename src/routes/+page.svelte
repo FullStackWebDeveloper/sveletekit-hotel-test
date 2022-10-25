@@ -47,21 +47,14 @@
      });
      async function getData() {
         let data = await hotels.result()
-        console.log(data)
      }
      getData()
-     function reload(e) {
-        console.log(roomStyle)
-        if (e) {
-
-        } else {
-            hotels.refetch();
-        }
+     function reload() {
+        hotels.refetch();
      }
  
      $: hotels.refetch({ roomStyle });
      const goDetails = (hotelId) => {
-        console.log('asdfasdf')
         window.location.href = `./hotels/${hotelId}`
      }
    </script>

@@ -1,0 +1,70 @@
+.hotel-detail-page {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.hotel-detail_title {
+  font-size: 70px;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+p {
+  font-size: 35px;
+  font-weight: 500;
+  color: #ffffff;
+  margin: 0;
+}
+
+.floor-list-title {
+  font-size: 50px;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+a {
+  color: #ffffff;
+  font-size: 30px;
+  font-weight: 500;
+  display: block;
+}
+
+@media (max-width: 1200px) {
+  p {
+    font-size: 30px;
+  }
+  .floor-list-title {
+    font-size: 40px;
+    margin-bottom: 20px !important;
+  }
+  a {
+    font-size: 25px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hotel-detail_title {
+    font-size: 50px;
+  }
+  .detail-panel {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+  }
+  .hotel-detail_title {
+    margin-bottom: 30px !important;
+  }
+  p, a {
+    font-size: 25px;
+  }
+  .floor-list-title {
+    margin-top: 30px;
+    font-size: 30px;
+  }
+}
+@media (max-width: 768px) {
+  p, a {
+    font-size: 20px;
+  }
+}

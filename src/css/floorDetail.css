@@ -1,0 +1,50 @@
+.floor-detail-page {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.table {
+  color: #ffffff;
+}
+
+.floor-detail_title {
+  font-size: 70px;
+  color: #ffffff;
+  font-weight: 700;
+}
+p {
+  font-size: 35px;
+  font-weight: 500;
+  color: #ffffff;
+  margin: 0;
+}
+
+.floow-list-title {
+  font-size: 50px;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+a {
+  color: #ffffff;
+  font-size: 30px;
+  font-weight: 500;
+  display: block;
+}
+
+@media (max-width: 991px) {
+  .floor-detail_title {
+    font-size: 50px;
+    margin-bottom: 20px !important;
+  }
+}
+
+@media (max-width: 550px) {
+ p {
+  font-size: 20px;
+ }
+.floow-list-title {
+  font-size: 35px;
+}
+}

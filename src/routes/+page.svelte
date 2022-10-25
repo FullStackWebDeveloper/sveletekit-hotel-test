@@ -55,7 +55,7 @@
  
      $: hotels.refetch({ roomStyle });
      const goDetails = (hotelId) => {
-        window.location.href = `./hotels/${hotelId}`
+        window.location.href = `./hotels/details/${hotelId}`
      }
    </script>
         

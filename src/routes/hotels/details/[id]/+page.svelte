@@ -183,13 +183,6 @@
     </div>
   </div>
 
-  <h2>Add Book</h2>
-
-  <form on:submit|preventDefault={handleSubmit}>
-    <label>Title <input type="text" name="title" /></label>
-    <label>Author <input type="text" name="author" /></label>
-    <button type="submit">Add Book</button>
-  </form>
 </Layout>
 
 <style>

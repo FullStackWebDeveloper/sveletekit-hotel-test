@@ -1,110 +1,175 @@
 <script>
-  import { ApolloClient, InMemoryCache, gql } from "@apollo/client/core";
-  import "../../../css/hotelDetail.css";
+    import { ApolloClient, InMemoryCache, gql } from "@apollo/client/core";
+    import { setClient, query, mutation } from "svelte-apollo";	
+    import MultiSelect from 'svelte-multiselect'
+    
+    import "../../../css/hotelDetail.css"
 
-  // import { SvelteApolloClient } from "svelte-apollo-client";
-  import { setClient, query, mutation } from "svelte-apollo";
-  import Layout from "../../Layout.svelte";
-  export let data;
-  // const client = new SvelteApolloClient({
-  //     uri: "http://localhost:5000/graphql",
-  //     cache: new InMemoryCache()
-  // });
+    
+    const roomStyles =  ['SINGLE', 'DOUBLE', 'QUEEN', 'KING', 'SUITE'];
+    const amenity = [`POOL`, `BREAKFAST`, `LAUNDRY`, `INTERNET`, `GYM`];
+    const states = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'];
 
-  const client = new ApolloClient({
-    uri: "http://192.168.114.110:5000/graphql",
-    cache: new InMemoryCache(),
-  });
-  setClient(client);
+    let selectedAmenities = [];
+    let selectedRoomStyles  = [];
+    let selectedState = '';
 
-  let hotel;
-  let guestsNumber = 0;
-  let numberOfvacancies = {};
-  let hotelId = data.hotel_id;
+	const client = new ApolloClient({
+        uri: "http://localhost:5000/graphql",
+		cache: new InMemoryCache()
+	});
+	setClient(client);
 
-  // Mutation
 
-  const ADD_HOTEL = gql`
-    mutation create_hotel(
-      $address: AddressInput!
-      $name: String!
-      $numFloors: Int
-      $numRooms: Int
-      $amenities: [Amenity!]
-    ) {
-      createHotel(
-        address: $address
-        name: $name
-        numFloors: $numFloors
-        numRooms: $numRooms
-        amenities: $amenities
-      ) {
+    // Mutation
+
+    const ADD_HOTEL = gql`
+    mutation create_hotel($address: AddressInput!, $name: String!, $numFloors: Int, $numRooms: Int, $amenities: [Amenity!]) {
+    createHotel(address: $address, name: $name, numFloors: $numFloors, numRooms: $numRooms, amenities: $amenities) {
         id
         name
         amenities
         address {
-          city
-          state
+        city
+        state
         }
         roomStyles
-      }
     }
-  `;
-  const addHotel = mutation(ADD_HOTEL);
+    }
+    `;
+    const addHotel = mutation(ADD_HOTEL);
 
-  function handleSubmit(event) {
-    const data = new FormData(event.target);
+    function handleSubmit(event) {
+        const data = new FormData(event.target);
 
-    (async () => {
-      const title = data.get("title");
-      const author = data.get("author");
+        (async () => {    
+            const hotelName = data.get("hotelName");
+            const cityName = data.get("cityName");
+            const floorNumber = data.get("floorNumber");
+            const roomNumber = data.get("roomNumber");
+            console.log("selectedAmenities : ", selectedAmenities);
+            console.log("selectedRoomStyles : ", selectedRoomStyles);
+            await addHotel({
+                variables: {
+                    "address": {
+                        "city": cityName,
+                        "state": selectedState
+                    },
+                    "name": hotelName,
+                    "amenities": selectedAmenities,
+                    "roomStyles": selectedRoomStyles
+                },
+                "numRooms": roomNumber,
+                "numFloors": floorNumber
+            });
 
-      await addHotel({
-        variables: {
-          address: {
-            city: "Tampa",
-            state: "FL",
-          },
-          name: "My hotel",
-          amenities: ["GYM", "INTERNET"],
-          roomStyles: ["SINGLE", "DOUBLE"],
-        },
-        numRooms: 20,
-        numFloors: 5,
-      });
+            selectedAmenities=[];
+            selectedRoomStyles=[];
+            event.target.reset();
 
-      event.target.reset();
+        })().catch(error => {
+            // TODO
+            console.error(error);
+    })
 
-      // TEMP Explicitly refetch
-      // (there's probably some way to explicitly update the cache, although search might not match)
-      // books.refetch({ search });
-    })().catch((error) => {
-      // TODO
-      console.error(error);
-    });
-  }
-</script>
-
-<Layout header>
+}
+  </script>
+ 
   <div class="hotel-detail-page">
-    <div class="container" />
-  </div>
-
-  <h2>Add Book</h2>
-
-  <form on:submit|preventDefault={handleSubmit}>
-    <label>Title <input type="text" name="title" /></label>
-    <label>Author <input type="text" name="author" /></label>
-    <button type="submit">Add Book</button>
-  </form>
-</Layout>
-
-<style>
-  button {
-    background: #ff3e00;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 2px;
-  }
-</style>
+    <div class="container">
+        <div class="d-flex flex-column align-items-end mb-5">
+          <div
+            class="d-flex align-items-center justify-content-end header py-3"
+          >
+            <a href="./createHotel.html" class="mr-3">Create Hotel</a>
+            <a href="./register.html">Register</a>
+          </div>
+          <input
+            type="input"
+            placeholder="Search"
+            class="form-control search-input"
+          />
+        </div>
+        <h1 class="hotel-detail_title mb-5 text-center">Create Hotel</h1>
+        <form on:submit|preventDefault="{handleSubmit}">
+          <div class="row">
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label for="hotelName">Hotel Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="hotelName"
+                  name="hotelName"
+                  placeholder="Hotel Name"
+                />
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label for="Amenities">Amenities</label>
+                <MultiSelect bind:selected={selectedAmenities} name="amenity" options={amenity} />
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label for="RoomStyles">Room Styles</label>
+                <MultiSelect bind:selected={selectedRoomStyles} name="roomStyle"  options={roomStyles} />
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label for="cityName">City Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="cityName"
+                  name="cityName"
+                  placeholder="City Name"
+                />
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label for="cityName">State Name</label>
+                <!-- <Select bind:selectedState options={states} /> -->
+                <select
+                    class="form-select"
+                    aria-label="Select State"
+                    default="SINGLE"
+                    bind:value={selectedState}>
+                {#each states as state}
+                    <option value="{state}">{state}</option>   
+                {/each}
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label for="floorNumber">Floor Number</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="floorNumber"
+                  name="floorNumber"
+                  placeholder="Floor Number"
+                />
+              </div>
+            </div>
+            <div class="col-md-6 col-12">
+              <div class="form-group">
+                <label for="roomNumber">Room Number</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="roomNumber"
+                  name="roomNumber"
+                  placeholder="Room Number"
+                />
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Create</button>
+        </form>
+      </div>
+</div>

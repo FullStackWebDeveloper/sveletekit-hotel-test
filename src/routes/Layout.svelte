@@ -14,8 +14,7 @@
   <div class="slotHeader">
     <div class="container d-flex flex-column align-items-end">
       <div class="d-flex align-items-center justify-content-end header py-3">
-        <a href="./pages/createHotel.html" class="mr-3">Create Hotel </a>
-        <a href="./pages/register.html">Register </a>
+        <a href="/hotels/add" class="mr-3">Create Hotel </a>
       </div>
     </div>
   </div>

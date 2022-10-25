@@ -9,9 +9,9 @@
     cache: new InMemoryCache(),
   });
   setClient(client);
+  let roomStyle = "SINGLE";
 
   // Query
-  let roomStyle = "SINGLE";
   const HOTELS = gql`
     query hotels_by_room_style($roomStyle: Style!) {
       hotelsByRoomStyle(style: $roomStyle) {
@@ -26,42 +26,31 @@
       }
     }
   `;
-  //  const GETALLHOTELS = gql`
-  //  	query Hotels {
-  //  		hotels {
-  //             id
-  //             name
-  //             address {
-  //             city
-  //             state
-  //             }
-  //             amenities
-  //             roomStyles
-  //  		}
-  //  	}
-  //  `;
+  const REMOVEHOTEL = gql`
+  mutation RemoveHotel($removeHotelId: ID!) {
+    removeHotel(id: $removeHotelId)
+  }
+  `;
+  const removeHotel = mutation(REMOVEHOTEL);
 
-  //  const hotels = query(GETALLHOTELS);
   const hotels = query(HOTELS, {
     variables: { roomStyle },
   });
-  async function getData() {
-    let data = await hotels.result();
-  }
-  getData();
-  function reload() {
+  
+  const reload = () => {
     hotels.refetch();
   }
 
   $: hotels.refetch({ roomStyle });
-  const goDetails = (hotelId) => {
-    window.location.href = `./hotels/details/${hotelId}`;
+  const removeHotelAction = async (hotelId) => {
+    await removeHotel({
+                variables: {
+                  "removeHotelId": hotelId
+                }
+            });
+    hotels.refetch();
   };
 </script>
-
-<!-- <label>Search <input type="search" bind:value="{search}" /></label>
- 
- <button on:click="{reload}">Reload</button> -->
 
 <Layout header>
   <div class="homepage">
@@ -70,11 +59,9 @@
         <select
           class="form-select"
           aria-label="Default select example"
-          default="SINGLE"
           bind:value={roomStyle}
           on:change={reload}
         >
-          <option value="">ALL TYPES</option>
           <option value="SINGLE" selected>SINGLE</option>
           <option value="DOUBLE">DOUBLE</option>
           <option value="QUEEN">QUEEN</option>
@@ -93,6 +80,7 @@
               <th class="text-left">Address</th>
               <th class="text-left">Amenities</th>
               <th class="text-left">Room Styles</th>
+              <th class="text-left">Action</th>
             </tr>
           </thead>
           <tbody class="table-hover">
@@ -103,9 +91,9 @@
                 Error: {$hotels.error.message}
               {:else}
                 {#each $hotels.data.hotelsByRoomStyle as hotel}
-                  <tr on:click={() => goDetails(hotel.id)}>
+                  <tr>
                     <td class="text-left">
-                      {hotel.name}
+                      <a href="./hotels/details/{hotel.id}">{hotel.name}</a>
                     </td>
                     <td class="text-left">
                       {hotel.address.city}, {hotel.address.state}
@@ -115,6 +103,9 @@
                     </td>
                     <td class="text-left">
                       {hotel.roomStyles}
+                    </td>
+                    <td class="text-left">
+                      <button on:click={() => removeHotelAction(hotel.id)}>Remove</button>
                     </td>
                   </tr>
                 {/each}

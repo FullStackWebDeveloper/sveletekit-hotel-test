@@ -13,7 +13,8 @@
 <div class="main-layout">
   <div class="slotHeader">
     <div class="container d-flex flex-column align-items-end">
-      <div class="d-flex align-items-center justify-content-end header py-3">
+      <div class="d-flex align-items-center w-100 justify-content-between header py-3">
+        <a href="/">Home</a>
         <a href="/hotels/add" class="mr-3">Create Hotel </a>
       </div>
     </div>

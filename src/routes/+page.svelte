@@ -1,11 +1,12 @@
 <script>
   import { ApolloClient, InMemoryCache, gql } from "@apollo/client/core";
   import { setClient, query, mutation } from "svelte-apollo";
+  import { PUBLIC_SERVER_URL } from '$env/static/public'
   import "../css/homepage.css";
   import Layout from "./Layout.svelte";
 
   const client = new ApolloClient({
-    uri: "http://192.168.114.110:5000/graphql",
+    uri: PUBLIC_SERVER_URL + "/graphql",
     cache: new InMemoryCache(),
   });
   setClient(client);
@@ -55,41 +56,41 @@
 <Layout header>
   <div class="homepage">
     <div class="container">
-      <div class="d-flex flex-column align-items-end mb-5">
-        <select
-          class="form-select"
-          aria-label="Default select example"
-          bind:value={roomStyle}
-          on:change={reload}
-        >
-          <option value="SINGLE" selected>SINGLE</option>
-          <option value="DOUBLE">DOUBLE</option>
-          <option value="QUEEN">QUEEN</option>
-          <option value="KING">KING</option>
-          <option value="SUITE">SUITE</option>
-        </select>
-      </div>
       <div class="row">
-        <div class="table-title">
-          <h1 class="home-title mb-5 text-center">Hotel List</h1>
+        <div class="table-title w-100 mt-5">
+          <div class="d-flex align-items-center justify-content-between w-100">
+            <h1 class="home-title mb-5 text-center">Hotel List</h1>
+            <select
+              class="form-select"
+              aria-label="Default select example"
+              bind:value={roomStyle}
+              on:change={reload}
+            >
+              <option value="SINGLE" selected>SINGLE</option>
+              <option value="DOUBLE">DOUBLE</option>
+              <option value="QUEEN">QUEEN</option>
+              <option value="KING">KING</option>
+              <option value="SUITE">SUITE</option>
+            </select></div>
         </div>
-        <table class="table-fill">
-          <thead>
-            <tr>
-              <th class="text-left">Name</th>
-              <th class="text-left">Address</th>
-              <th class="text-left">Amenities</th>
-              <th class="text-left">Room Styles</th>
-              <th class="text-left">Action</th>
-            </tr>
-          </thead>
-          <tbody class="table-hover">
-            {#if hotels}
+        <div class="table-cover">
+          <table class="table table-striped table-dark">
+            <thead>
+              <tr>
+                <th class="text-left">Name</th>
+                <th class="text-left">Address</th>
+                <th class="text-left">Amenities</th>
+                <th class="text-left">Room Styles</th>
+                <th class="text-left">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {#if hotels}
               {#if $hotels.loading}
                 Loading...
               {:else if $hotels.error}
                 Error: {$hotels.error.message}
-              {:else}
+                {:else}
                 {#each $hotels.data.hotelsByRoomStyle as hotel}
                   <tr>
                     <td class="text-left">
@@ -108,12 +109,13 @@
                       <button on:click={() => removeHotelAction(hotel.id)}>Remove</button>
                     </td>
                   </tr>
-                {/each}
-              {/if}
-            {/if}
-          </tbody>
-        </table>
-      </div>
+                  {/each}
+                  {/if}
+                  {/if}
+                </tbody>
+              </table>
+            </div>
+          </div>
     </div>
   </div>
 </Layout>

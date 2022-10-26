@@ -1,21 +1,18 @@
 <script>
   import { ApolloClient, InMemoryCache, gql } from "@apollo/client/core";
+  import { setClient, query} from "svelte-apollo";
+  import { PUBLIC_SERVER_URL } from '$env/static/public'
   import "../../../css/floorDetail.css";
-  import { setClient, query, mutation } from "svelte-apollo";
   import Layout from "../../Layout.svelte";
-  import { get_root_for_style } from "svelte/internal";
-  import { resolveObjMapThunk, responsePathAsArray } from "graphql";
   export let data;
 
   const client = new ApolloClient({
-    uri: "http://192.168.114.110:5000/graphql",
+    uri: PUBLIC_SERVER_URL + "/graphql",
     cache: new InMemoryCache(),
   });
   setClient(client);
 
   let floorDetail;
-  let guestsNumber = 0;
-  let numberOfvacancies = {};
   let floor_id = data.floors_id[0];
   let hotel_id = data.floors_id[1];
 
@@ -49,10 +46,6 @@
     variables: { floorHotelId: hotel_id, floorId: floor_id },
   });
 
-  const getData = async () => {
-    const data = await floorDetail.result();
-  };
-  getData();
 </script>
 
 <Layout header>
@@ -113,13 +106,3 @@
     </div>
   </div>
 </Layout>
-
-<style>
-  button {
-    background: #ff3e00;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 2px;
-  }
-</style>

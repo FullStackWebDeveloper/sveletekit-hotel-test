@@ -1,18 +1,14 @@
 <script>
   import { ApolloClient, InMemoryCache, gql } from "@apollo/client/core";
-  import "../../../../css/hotelDetail.css";
-
-  // import { SvelteApolloClient } from "svelte-apollo-client";
+  import { PUBLIC_SERVER_URL } from '$env/static/public'
   import { setClient, query, mutation } from "svelte-apollo";
+  
   import Layout from "../../../Layout.svelte";
+  import "../../../../css/hotelDetail.css";
   export let data;
-  // const client = new SvelteApolloClient({
-  //     uri: "http://localhost:5000/graphql",
-  //     cache: new InMemoryCache()
-  // });
 
   const client = new ApolloClient({
-    uri: "http://192.168.114.110:5000/graphql",
+    uri: PUBLIC_SERVER_URL + "/graphql",
     cache: new InMemoryCache(),
   });
   setClient(client);
@@ -67,67 +63,6 @@
   };
   getData();
 
-  // Mutation
-
-  const ADD_HOTEL = gql`
-    mutation create_hotel(
-      $address: AddressInput!
-      $name: String!
-      $numFloors: Int
-      $numRooms: Int
-      $amenities: [Amenity!]
-    ) {
-      createHotel(
-        address: $address
-        name: $name
-        numFloors: $numFloors
-        numRooms: $numRooms
-        amenities: $amenities
-      ) {
-        id
-        name
-        amenities
-        address {
-          city
-          state
-        }
-        roomStyles
-      }
-    }
-  `;
-  const addHotel = mutation(ADD_HOTEL);
-
-  function handleSubmit(event) {
-    const data = new FormData(event.target);
-
-    (async () => {
-      const title = data.get("title");
-      const author = data.get("author");
-
-      await addHotel({
-        variables: {
-          address: {
-            city: "Tampa",
-            state: "FL",
-          },
-          name: "My hotel",
-          amenities: ["GYM", "INTERNET"],
-          roomStyles: ["SINGLE", "DOUBLE"],
-        },
-        numRooms: 20,
-        numFloors: 5,
-      });
-
-      event.target.reset();
-
-      // TEMP Explicitly refetch
-      // (there's probably some way to explicitly update the cache, although search might not match)
-      // books.refetch({ search });
-    })().catch((error) => {
-      // TODO
-      console.error(error);
-    });
-  }
 </script>
 
 <Layout header>
@@ -142,33 +77,34 @@
         {:else}
           <div class="row">
             <div class="col-md-8 col-12 detail-panel">
-              <div class="d-flex">
-                <p class="data-title mr-1">Name:</p>
-                <p>{$hotel.data.hotel.name}</p>
+              <div class="row">
+                <p class="data-title col-4">Name:</p>
+                <p class="col-8">{$hotel.data.hotel.name}</p>
               </div>
-              <div class="d-flex">
-                <p class="data-title mr-1">Address:</p>
-                <p>
+              <div class="row">
+                <p class="data-title col-4">Address:</p>
+                <p class="col-8">
                   {$hotel.data.hotel.address.city}, {$hotel.data.hotel.address
                     .state}
                 </p>
               </div>
-              <div class="d-flex">
-                <p class="data-title mr-1">Amenities offered:</p>
-                <p>{$hotel.data.hotel.amenities}</p>
+              <div class="row">
+                <p class="data-title col-4">Amenities offered:</p>
+                <p class="col-8">{$hotel.data.hotel.amenities}</p>
               </div>
-              <div class="d-flex">
-                <p class="data-title mr-1">Number of guests:</p>
-                <p>{guestsNumber}</p>
+              <div class="row">
+                <p class="data-title col-4">Number of guests:</p>
+                <p class="col-8">{guestsNumber}</p>
               </div>
-              <div class="d-flex">
-                <p class="data-title mr-1">
-                  Number of vacancies:<br />(by room style)
+              <div class="row">
+                <p class="data-title col-4">
+                  Number of vaca8cies:<br />(by room style)
                 </p>
+                <p class="col-8 d-flex flex-wrap align-items-center">
                 {#each Object.keys(numberOfvacancies) as roomType}
-                  <p>{roomType}:</p>
-                  <p>{numberOfvacancies[roomType]}</p>
+                  <p class="mr-2">{roomType}({numberOfvacancies[roomType]})</p>
                 {/each}
+                </p>
               </div>
             </div>
             <div class="col-md-4 col-12 text-center">
@@ -182,15 +118,4 @@
       {/if}
     </div>
   </div>
-
 </Layout>
-
-<style>
-  button {
-    background: #ff3e00;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 2px;
-  }
-</style>

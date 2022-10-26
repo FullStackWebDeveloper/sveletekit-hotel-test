@@ -1,9 +1,11 @@
 <script>
     import { ApolloClient, InMemoryCache, gql } from "@apollo/client/core";
-    import { setClient, query, mutation } from "svelte-apollo";	
+    import { setClient, mutation } from "svelte-apollo";	
     import MultiSelect from 'svelte-multiselect'
-    
+    import { PUBLIC_SERVER_URL } from '$env/static/public'
+
     import "../../../css/hotelDetail.css"
+    import Layout from "../../Layout.svelte";
 
     
     const roomStyles =  ['SINGLE', 'DOUBLE', 'QUEEN', 'KING', 'SUITE'];
@@ -15,7 +17,7 @@
     let selectedState = '';
 
 	const client = new ApolloClient({
-        uri: "http://localhost:5000/graphql",
+        uri: PUBLIC_SERVER_URL + "/graphql",
 		cache: new InMemoryCache()
 	});
 	setClient(client);
@@ -75,86 +77,74 @@
 }
   </script>
  
-  <div class="hotel-detail-page">
-    <div class="container">
-        <div class="d-flex flex-column align-items-end mb-5">
-          <div
-            class="d-flex align-items-center justify-content-end header py-3"
-          >
-            <a href="./createHotel.html" class="mr-3">Create Hotel</a>
-            <a href="./register.html">Register</a>
-          </div>
-          <input
-            type="input"
-            placeholder="Search"
-            class="form-control search-input"
-          />
-        </div>
-        <h1 class="hotel-detail_title mb-5 text-center">Create Hotel</h1>
-        <form on:submit|preventDefault="{handleSubmit}">
-          <div class="row">
+ <Layout header>
+     <div class="hotel-detail-page">
+         <div class="container">
+             <h1 class="hotel-detail_title mb-5 text-center">Create Hotel</h1>
+             <form on:submit|preventDefault="{handleSubmit}">
+                <div class="row">
+                    <div class="col-md-6 col-12">
+                        <div class="form-group">
+                            <label for="hotelName">Hotel Name</label>
+                            <input
+                            type="text"
+                            class="form-control"
+                            id="hotelName"
+                            name="hotelName"
+                            placeholder="Hotel Name"
+                            />
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <div class="form-group">
+                            <label for="Amenities">Amenities</label>
+                            <MultiSelect bind:selected={selectedAmenities} name="amenity" options={amenity} />
+                        </div>
+            </div>
             <div class="col-md-6 col-12">
-              <div class="form-group">
-                <label for="hotelName">Hotel Name</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="hotelName"
-                  name="hotelName"
-                  placeholder="Hotel Name"
-                />
+                <div class="form-group">
+                    <label for="RoomStyles">Room Styles</label>
+                    <MultiSelect bind:selected={selectedRoomStyles} name="roomStyle"  options={roomStyles} />
+                </div>
+            </div>
+            <div class="col-md-6 col-12">
+                <div class="form-group">
+                    <label for="cityName">City Name</label>
+                    <input
+                    type="text"
+                    class="form-control"
+                    id="cityName"
+                    name="cityName"
+                    placeholder="City Name"
+                    />
               </div>
             </div>
             <div class="col-md-6 col-12">
-              <div class="form-group">
-                <label for="Amenities">Amenities</label>
-                <MultiSelect bind:selected={selectedAmenities} name="amenity" options={amenity} />
-              </div>
-            </div>
-            <div class="col-md-6 col-12">
-              <div class="form-group">
-                <label for="RoomStyles">Room Styles</label>
-                <MultiSelect bind:selected={selectedRoomStyles} name="roomStyle"  options={roomStyles} />
-              </div>
-            </div>
-            <div class="col-md-6 col-12">
-              <div class="form-group">
-                <label for="cityName">City Name</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="cityName"
-                  name="cityName"
-                  placeholder="City Name"
-                />
-              </div>
-            </div>
-            <div class="col-md-6 col-12">
-              <div class="form-group">
+                <div class="form-group">
                 <label for="cityName">State Name</label>
                 <!-- <Select bind:selectedState options={states} /> -->
                 <select
-                    class="form-select"
-                    aria-label="Select State"
-                    default="SINGLE"
-                    bind:value={selectedState}>
+                class="form-select state-name"
+                aria-label="Select State"
+                default="SINGLE"
+                bind:value={selectedState}>
                 {#each states as state}
-                    <option value="{state}">{state}</option>   
+                <option value="{state}">{state}</option>   
                 {/each}
-                </select>
+            </select>
               </div>
             </div>
             <div class="col-md-6 col-12">
-              <div class="form-group">
-                <label for="floorNumber">Floor Number</label>
-                <input
-                  type="number"
-                  class="form-control"
+                <div class="form-group">
+                    <label for="floorNumber">Floor Number</label>
+                    <input
+                    type="number"
+                    class="form-control"
                   id="floorNumber"
                   name="floorNumber"
                   placeholder="Floor Number"
-                />
-              </div>
+                  />
+                </div>
             </div>
             <div class="col-md-6 col-12">
               <div class="form-group">
@@ -165,11 +155,12 @@
                   id="roomNumber"
                   name="roomNumber"
                   placeholder="Room Number"
-                />
+                  />
               </div>
             </div>
-          </div>
-          <button type="submit" class="btn btn-primary">Create</button>
-        </form>
-      </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
 </div>
+</div>
+</Layout>
